@@ -27,9 +27,9 @@ body {
 }
 
 .app-container {
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 20px;
 }
 
 .app-header {
@@ -98,11 +98,30 @@ body {
 }
 
 .button-danger {
-  background-color: var(--danger-color);
+  background-color: #ff4d4d;
+  color: #fff;
 }
 
 .button-danger:hover {
-  background-color: #d32f2f;
+  background-color: #ff3333;
+}
+
+.button-recover {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.button-recover:hover {
+  background-color: #45a049;
+}
+
+.auto-trashed-notice {
+  background-color: #ffe8e8;
+  border-left: 4px solid #ff4d4d;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 14px;
+  border-radius: 4px;
 }
 
 .button-container {
@@ -238,6 +257,120 @@ body {
   color: var(--border-color);
 }
 
+/* Category tabs styling */
+.category-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 4px;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.tab-button:hover {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-bottom: 2px solid white;
+  margin-bottom: -1px;
+}
+
+/* Category badges */
+.category-badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: 10px;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.category-important {
+  background-color: #ECFDF5;
+  color: var(--success-color);
+}
+
+.category-regular {
+  background-color: var(--background-light);
+  color: var(--text-secondary);
+}
+
+.category-trash {
+  background-color: #FEF2F2;
+  color: var(--danger-color);
+}
+
+/* Email item styling based on category */
+.email-category-important {
+  border-left: 3px solid var(--success-color);
+}
+
+.email-category-trash {
+  border-left: 3px solid var(--danger-color);
+}
+
+.email-category-regular {
+  border-left: 3px solid var(--border-color);
+}
+
+/* Category actions */
+.category-actions {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+  flex-grow: 1;
+}
+
+.category-actions label {
+  margin-right: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.category-actions select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-white);
+  color: var(--text-color);
+  flex-grow: 1;
+  max-width: 120px;
+}
+
+.hint-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+  text-align: center;
+  font-style: italic;
+}
+
+.button-loading {
+  opacity: 0.7;
+}
+
+.loading-spinner.small {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  margin-left: 8px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .app-container {
@@ -250,5 +383,13 @@ body {
   
   .button {
     width: 100%;
+  }
+  
+  .category-tabs {
+    padding-bottom: 10px;
+  }
+  
+  .category-actions {
+    margin: 10px 0;
   }
 }

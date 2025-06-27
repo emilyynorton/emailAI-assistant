@@ -35,6 +35,12 @@ ENV/
 *.sqlite3
 *.sqlite
 
+# Model and cache files
+*.pkl
+token*.json
+*cache*
+*credentials*
+
 # Google API credentials
 client_secret*.json
 
