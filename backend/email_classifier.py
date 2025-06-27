@@ -13,7 +13,7 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 
 # GENERAL IDEA:
-# - fetches 20 most recent read and starred, read and deleted, read and sitting in inbox emails
+# - fetches 50 most recent read and starred, read and deleted, read and sitting in inbox emails
 # - uses OpenAI embeddings to convert those to vectors (X = list of embeddings, Y = classification as trash/important)
 # - uses sklearn to train a model on those embeddings
     # - splits set into training and testing set
@@ -82,9 +82,9 @@ class EmailClassifier:
         
         # Use much smaller sample sizes for faster training
         # For production, these numbers could be increased
-        MAX_IMPORTANT = 20
-        MAX_TRASH = 20
-        MAX_REGULAR = 20
+        MAX_IMPORTANT = 50
+        MAX_TRASH = 50
+        MAX_REGULAR = 50
         
         print(f"Fetching training data (max {MAX_IMPORTANT} important, {MAX_REGULAR} regular, {MAX_TRASH} trash emails)...")
         
