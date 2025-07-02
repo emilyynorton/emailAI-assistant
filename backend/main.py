@@ -16,10 +16,10 @@ email_classifier = EmailClassifier()
 # Flag to track if we've attempted to initialize the model
 _model_initialized = False
 
-# CORS for local frontend
+# CORS for frontend (local and production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", os.getenv("FRONTEND_URL", "")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
