@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import config from './config';
 
 function App() {
   const [accounts, setAccounts] = useState([]);
@@ -18,7 +19,7 @@ function App() {
 
   // Fetch connected accounts
   useEffect(() => {
-    axios.get('http://localhost:8000/accounts')
+    axios.get(`${config.API_URL}/accounts`)
       .then(res => setAccounts(res.data))
       .catch(() => setAccounts([]));
   }, []);
@@ -33,7 +34,7 @@ function App() {
   // Fetch today's unreplied emails
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:8000/emails/today')
+    axios.get(`${config.API_URL}/emails/today`)
       .then(res => {
         setEmails(res.data);
         setLoading(false);
@@ -63,7 +64,7 @@ function App() {
     // Set up a refresh interval (every 2 minutes)
     const refreshInterval = setInterval(() => {
       if (accounts.length > 0) {
-        axios.get('http://localhost:8000/emails/today')
+        axios.get(`${config.API_URL}/emails/today`)
           .then(res => {
             setEmails(res.data);
           })
@@ -81,7 +82,7 @@ function App() {
   const handleUpdateCategory = async (email, newCategory) => {
     setCategoryLoading(prev => ({ ...prev, [email.id]: true }));
     try {
-      await axios.post('http://localhost:8000/emails/update_category', {
+      await axios.post(`${config.API_URL}/emails/update_category`, {
         email_id: email.id,
         account_email: email.account,
         category: newCategory
@@ -104,7 +105,7 @@ function App() {
     setDraftLoading(draft => ({ ...draft, [email.id]: true }));
     setDrafts(draft => ({ ...draft, [email.id]: null }));
     try {
-      const res = await axios.post('http://localhost:8000/emails/draft_reply', {
+      const res = await axios.post(`${config.API_URL}/emails/draft_reply`, {
         account_email: email.account,
         email_id: email.id,
         thread_id: email.threadId,
@@ -120,7 +121,7 @@ function App() {
   const handleDelete = async (email) => {
     setDeleteLoading((prev) => ({ ...prev, [email.id]: true }));
     try {
-      await axios.post('http://localhost:8000/emails/delete', {
+      await axios.post(`${config.API_URL}/emails/delete`, {
         email_id: email.id,
         account_email: email.account
       });
@@ -144,7 +145,7 @@ function App() {
   const handleRecover = async (email) => {
     setRecoverLoading((prev) => ({ ...prev, [email.id]: true }));
     try {
-      await axios.post('http://localhost:8000/emails/recover', {
+      await axios.post(`${config.API_URL}/emails/recover`, {
         email_id: email.id,
         account_email: email.account
       });
@@ -165,7 +166,7 @@ function App() {
   };
 
   const handleConnectAccount = () => {
-    window.location.href = 'http://localhost:8000/auth/google';
+    window.location.href = `${config.API_URL}/auth/google`;
   };
 
   const handleSaveName = () => {
