@@ -240,28 +240,67 @@ class EmailClassifier:
         X = self._get_embeddings(df['text'].tolist())
         y = df['label'].tolist()
         
-        # Split data - use stratify to ensure each class is represented
+        # First split: separate out test set (20% of data)
         from sklearn.model_selection import train_test_split
         try:
-            X_train, X_test, y_train, y_test = train_test_split(
+            # First split: separate out test set (20% of data)
+            X_temp, X_test, y_temp, y_test = train_test_split(
                 X, y, test_size=0.2, random_state=42, stratify=y
+            )
+            
+            # Second split: split remaining data into training (80%) and validation (20%)
+            # This works out to 64% train, 16% validation, 20% test of the original dataset
+            X_train, X_val, y_train, y_val = train_test_split(
+                X_temp, y_temp, test_size=0.2, random_state=42, stratify=y_temp
             )
         except ValueError:
             # If stratify fails (e.g., only one class), do without it
-            X_train, X_test, y_train, y_test = train_test_split(
+            X_temp, X_test, y_temp, y_test = train_test_split(
                 X, y, test_size=0.2, random_state=42
             )
+            X_train, X_val, y_train, y_val = train_test_split(
+                X_temp, y_temp, test_size=0.2, random_state=42
+            )
+        
+        print(f"Data split sizes - Training: {len(X_train)}, Validation: {len(X_val)}, Test: {len(X_test)}")
         
         # Train model (using RandomForest as it works well with embeddings)
         from sklearn.ensemble import RandomForestClassifier
+        from sklearn.model_selection import GridSearchCV
         
-        print("Training classifier model...")
-        classifier = RandomForestClassifier(n_estimators=50, random_state=42)
-        classifier.fit(X_train, y_train)
+        print("Training classifier model with hyperparameter tuning...")
         
-        # Evaluate
-        accuracy = classifier.score(X_test, y_test)
-        print(f"Model accuracy: {accuracy:.2f}")
+        # Use a smaller grid for faster training, can be expanded for better results
+        param_grid = {
+            'n_estimators': [30, 50, 70],
+            'max_depth': [None, 10, 20],
+            'min_samples_split': [2, 5]
+        }
+        
+        # Use GridSearchCV with validation data to find the best parameters
+        grid_search = GridSearchCV(
+            RandomForestClassifier(random_state=42),
+            param_grid=param_grid,
+            cv=3,  # Use 3-fold cross-validation on the training data
+            scoring='accuracy',
+            n_jobs=-1  # Use all available cores
+        )
+        
+        # Fit the grid search to the training data
+        grid_search.fit(X_train, y_train)
+        
+        # Get the best classifier
+        classifier = grid_search.best_estimator_
+        print(f"Best parameters: {grid_search.best_params_}")
+        
+        # Evaluate on validation set
+        val_accuracy = classifier.score(X_val, y_val)
+        print(f"Validation accuracy: {val_accuracy:.2f}")
+        
+        # Final evaluation on test set
+        test_accuracy = classifier.score(X_test, y_test)
+        print(f"Test accuracy: {test_accuracy:.2f}")
+        
         
         # Save model for this specific account
         self.classifiers[account_email] = classifier
